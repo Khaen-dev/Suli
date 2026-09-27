@@ -1,7 +1,7 @@
 <?php
 
-require "/required/functions.php";
-require "/required/config.php";
+require "required/functions.php";
+require "required/config.php";
 
 ?>
 <!DOCTYPE html>
@@ -18,7 +18,7 @@ require "/required/config.php";
 </body>
 </html>
 <script>
-        $("#search-box").load("search-bar?keresett");
+    $("#search-box").load("search-bar?keresett");
     document.getElementById("search-bar").addEventListener('keyup', (e) =>{
         var ertek = e.target.value;
         $("#search-box").load("search-bar?keresett"+ertek);
