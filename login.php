@@ -27,13 +27,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bejelentkezés</title>
-    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <form method="post">
-        <label>Bejelentkezés</label>
-        <input type="email" name="email" placeholder="Email@email.com">
-        <input type="password" name="password" placeholder="Jelszó">
+    <form method="post" class="login-form">
+        <label class="header">Bejelentkezés</label>
+        <label for="email" class="title">Email</label>
+        <input type="email" name="email" id="email" placeholder="Email@email.com">
+        <label for="password" class="title">Jelszó</label>
+        <input type="password" name="password" id="password" placeholder="Jelszó">
         <input type="submit" name="login-btn" value="Bejelentkezés">
     </form>
 </body>
