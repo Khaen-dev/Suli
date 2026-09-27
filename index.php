@@ -1,7 +1,7 @@
 <?php
 
-require "/required/functions.php";
-require "/required/config.php";
+require "../required/functions.php";
+require "../required/config.php";
 
 ?>
 <!DOCTYPE html>
