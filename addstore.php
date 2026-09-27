@@ -1,6 +1,6 @@
 <?php 
 
-require "config.php";
+require "required/config.php";
 
 ?>
 <!DOCTYPE html>
@@ -11,6 +11,10 @@ require "config.php";
     <title>Bolt hozzáadása</title>
 </head>
 <body>
-    <form method="post"></form>
+    <form method="post">
+        <label for="store-name">Bolt név</label>
+        <input type="text" name="store-name" id="store-name"><br><br>
+        <label for=""></label>
+    </form>
 </body>
 </html>

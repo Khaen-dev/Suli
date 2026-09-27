@@ -1,0 +1,11 @@
+:root {
+    --lime: #A6D957;
+    --light-lime: #BADE8C;
+    --white: #fff;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
