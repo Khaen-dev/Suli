@@ -1,7 +1,12 @@
 <?php
 
+<<<<<<< HEAD
 require "../required/functions.php";
 require "../required/config.php";
+=======
+require "required/functions.php";
+require "required/config.php";
+>>>>>>> 561515a6ee6db00d34e843bf0a0f6930f4b56ddd
 
 ?>
 <!DOCTYPE html>
@@ -10,7 +15,7 @@ require "../required/config.php";
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="http://code.jquery.com/jquery-latest.js"></script>
-    <title>Document</title>
+    <title>Főoldal</title>
 </head>
 <body>
     <input type="text" name = "search-bar">
@@ -18,9 +23,9 @@ require "../required/config.php";
 </body>
 </html>
 <script>
-        $("#search-box").load("search-bar?keresett");
+    $("#search-box").load("search-bar?kereset=");
     document.getElementById("search-bar").addEventListener('keyup', (e) =>{
         var ertek = e.target.value;
-        $("#search-box").load("search-bar?keresett"+ertek);
+        $("#search-box").load("search-bar?keresett="+ertek);
     })
 </script>

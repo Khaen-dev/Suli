@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .nav{
     text-decoration: none;
     color: #333;
@@ -18,4 +19,16 @@
     padding: 10px 15px;
     display: inline-block;
     list-style-type: none;
+=======
+:root {
+    --lime: #A6D957;
+    --light-lime: #BADE8C;
+    --white: #fff;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+>>>>>>> 561515a6ee6db00d34e843bf0a0f6930f4b56ddd
 }
