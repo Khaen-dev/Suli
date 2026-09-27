@@ -1,7 +1,12 @@
 <?php
 
+<<<<<<< HEAD
+require "../required/functions.php";
+require "../required/config.php";
+=======
 require "required/functions.php";
 require "required/config.php";
+>>>>>>> 561515a6ee6db00d34e843bf0a0f6930f4b56ddd
 
 ?>
 <!DOCTYPE html>
