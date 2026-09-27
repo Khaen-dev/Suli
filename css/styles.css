@@ -1,3 +1,23 @@
+.nav{
+    text-decoration: none;
+    color: #333;
+    padding: 10px 15px;
+    display: inline-block;
+}
+.nav ul{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.nav ul li{
+    display: inline-block;
+}
+.nav ul li a{
+    text-decoration: none;
+    color: #333;
+    padding: 10px 15px;
+    display: inline-block;
+    list-style-type: none;
 :root {
     --lime: #A6D957;
     --light-lime: #BADE8C;
