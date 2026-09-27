@@ -15,7 +15,7 @@ require "/required/config.php";
 <body>  
     <?php
     
-    $stmt = "SELECT * FROM boltok WHERE name LIKE '%$_GET[keresett]%'";
+    $stmt = "SELECT img, name, place FROM boltok WHERE name LIKE '%$_GET[keresett]%'";
     $found = $conn->query($stmt);
     while($f = $found->fetch_assoc()){
     echo "<img src = '$f[img]'></img>"." | ".$f['name']." | ".$f['place'];
