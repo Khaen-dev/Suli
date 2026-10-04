@@ -2,7 +2,9 @@
 
 require "required/functions.php";
 require "required/config.php";
-
+if(!isset($_COOKIE['id'])){
+    Header("Location: login.php");
+}
 ?>
 <!DOCTYPE html>
 <html lang="hu">
@@ -18,7 +20,7 @@ require "required/config.php";
 </body>
 </html>
 <script>
-    $("#search-box").load("search-bar?kereset=");
+    $("#search-box").load("search-bar?keresett=");
     document.getElementById("search-bar").addEventListener('keyup', (e) =>{
         var ertek = e.target.value;
         $("#search-box").load("search-bar?keresett="+ertek);
