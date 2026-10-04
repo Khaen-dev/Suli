@@ -1,0 +1,44 @@
+* {
+    padding: 0;
+    
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial;
+}
+.search input[type="text"] {
+    margin: 0 auto;
+    display: flex;
+    background-color: #f1f1f1;
+    width: 1000px;
+    height: 50px;
+    font-size: 20px;
+    border-radius: 15px;
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+.talalatok {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 1000px;
+    margin: 8px auto 0;
+}
+
+.talalat {
+    display: block;
+    margin: 0 auto;
+    padding: 10px 14px;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    background: #f0f0f0;
+    color: #222;
+    text-decoration: none;
+    width: 1200px;
+}
+
+.talalat:hover {
+    background: #e0e0e0;
+}
