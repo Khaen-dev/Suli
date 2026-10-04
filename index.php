@@ -2,7 +2,9 @@
 
 require "required/functions.php";
 require "required/config.php";
-
+if(!isset($_COOKIE['id'])){
+    Header("Location: login.php");
+}
 ?>
 <!DOCTYPE html>
 <html lang="hu">
