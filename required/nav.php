@@ -1,19 +1,14 @@
-<!DOCTYPE html>
-<html lang="hu">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel = "stylesheet" href = "../css/styles.css">
-    <title>nav</title>
-</head>
-<body>
-    <div class="nav">
+<div class="nav">
     <ul>
-        <li><a href="index.php">index.php</a></li>
-        <li><a href="index.php">index.php</a></li>
-        <li><a href="index.php">index.php</a></li>
-        <li><a href="index.php">index.php</a></li>
+        <li><a href="index.php" class="menu-left">Főoldal</a></li>
+        <li><a href="addstore.php" class="menu-left">Bolt hozzáadása</a></li>
+        <div class="dropdown menu-right">
+            <button class="dropbtn">lenyitos</button>
+            <div class="dropdown-content">
+                <a href="favorites.php">Kedvenc boltok</a>
+                <a href="profile.php">Profilom</a>
+                <a href="logout.php">Kijelentkezés</a>
+            </div>
+        </div>
     </ul>
 </div>
-</body>
-</html>
