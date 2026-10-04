@@ -1,0 +1,73 @@
+form { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 12px; 
+    max-width: 400px; 
+}
+
+.store-type-row { 
+    display: flex; 
+    gap: 8px; 
+    align-items: flex-start; 
+    flex-wrap: wrap; 
+}
+
+.search-select { 
+    position: relative; 
+    width: 220px; 
+}
+
+.search-select-toggle { 
+    width: 100%; 
+    text-align: left; 
+    padding: 4px 6px; 
+    background: #fff; 
+    border: 1px solid #767676; 
+}
+
+.search-select-panel { 
+    display: none; 
+    position: absolute; 
+    top: 100%; 
+    left: 0; 
+    z-index: 10; 
+    width: 100%; 
+    background: #fff; 
+    border: 1px solid #767676; 
+}
+
+.search-select-panel.open { 
+    display: block; 
+}
+
+.search-select-panel input { 
+    width: 100%; 
+    box-sizing: border-box; 
+    padding: 4px 6px; 
+    border: none; 
+    border-bottom: 1px solid #ccc; 
+}
+
+.search-select-options { 
+    max-height: 180px; 
+    overflow-y: auto; 
+}
+
+.search-select-options button { 
+    display: block; 
+    width: 100%; 
+    text-align: left; 
+    padding: 4px 6px; 
+    border: none; 
+    background: #fff; 
+    cursor: pointer; 
+}
+
+.search-select-options button:hover,
+.search-select-options button[aria-selected="true"] { 
+    background: #e8e8e8; 
+}
+
+#other-type { 
+    display: none; 
+}
