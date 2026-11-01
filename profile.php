@@ -10,7 +10,7 @@
     <title>Profilom</title>
 </head>
 <body>
-    <header> <?= require "required/nav.php"; ?></header>
+    <header> <?php require "required/nav.php"; ?></header>
     
 </body>
 </html>
