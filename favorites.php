@@ -25,10 +25,11 @@ if(!isset($_COOKIE['id'])) {
     
         $lekerdezes = "SELECT stores.name, stores.address FROM stores INNER JOIN favorites ON stores.id = favorites.storeid WHERE favorites.userid = '$_COOKIE[id]'";
         $talalt = $conn->query($lekerdezes);
-        $eredmeny = $talalt->fetch_assoc();
-        echo "<h1>Kedvenc Boltok</h1>";
-        echo "<p><strong>" . $eredmeny['name'] . "</strong></p>";
-        echo "<p>" . $eredmeny['address'] . "</p>";
+        while($eredmeny = $talalt->fetch_assoc()) {
+            echo "<h1>Kedvenc Boltok</h1>";
+            echo "<p><strong>" . $eredmeny['name'] . "</strong></p>";
+            echo "<p>" . $eredmeny['address'] . "</p>";
+        }
     ?>
 </body>
 </html>
