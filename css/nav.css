@@ -16,14 +16,16 @@
     box-sizing: border-box;
 }
 
+/* NAV */
 nav.nav{
     text-decoration: none;
     color: #333;
     padding: 10px 15px;
     display: inline-block;
+    position: fixed;
 }
 .nav ul{
-    background-color: var(--default);
+    background-color:var(--default);
     list-style: none;
     margin: 0;
     padding: 0;
@@ -34,7 +36,8 @@ nav.nav{
 .nav ul li a{
     text-decoration: none;
     color: #333;
-    padding: 10px 15px;
+    padding: 20px 15px;
+    font-weight: bold;
     display: inline-block;
     list-style-type: none;
 }
@@ -42,7 +45,8 @@ nav.nav{
 /* DROPDOWN */
 .dropbtn {
     background-color: var(--default);
-    padding: 13.5px 16px;
+    padding: 19.7px 16px;
+    font-size: 20px;
     border: none;
 }
 

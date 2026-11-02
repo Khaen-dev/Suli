@@ -29,9 +29,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/nav.css">
     <title>Regisztráció</title>
 </head>
 <body>
+    <header> <?php require "required/nav.php"; ?></header>
     <form method="post">
         <label>Regisztráció</label>
         <input type="email" name="email" placeholder="email@email.com">
