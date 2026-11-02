@@ -41,16 +41,18 @@ require "required/config.php";
             $userId = $_COOKIE['id'];
             $conn->query("INSERT INTO favorites (id,storeid, userid) VALUES (id,'$storeId', '$userId')");
             echo "<p>A bolt hozzáadva a kedvencekhez!</p>";
-            } 
-        }
+        } 
+    }
     
-        ?><form method ="post">
-            <input type="submit" id = "kedvenc" name="kedvenc" value="Kedvencekhez adás">
-            </form> 
+        ?>
+        <form method ="post">
+            <input type="submit" id = "kedvenc" name="kedvenc" value="Kedvencekhez adás" onclick="favorite()">
+        </form> 
 </body>
 </html>
 <script>
-    document.getElementById("kedvenc").addEventListener("click", function() {
-        this.style.display = "none";
-    });
+
+    function favorite(){
+        document.getElementById("kedvenc").style.display = "none";
+    }
 </script>
