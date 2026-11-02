@@ -2,12 +2,31 @@
 
 require "required/config.php";
 
-// setcookie("id", 1, time()+3600, "/");
-
 if (!isset($_COOKIE['id'])) {
     header("Location: login.php");
     die();
 }
+
+$userId = $_COOKIE['id'];
+$store_count = 0;
+$hasActiveSub = false;
+$canAddStore = false;
+
+$subStmt = $conn->prepare("
+    SELECT user_subscriptions.*, pricing.store_count AS max_stores 
+    FROM user_subscriptions 
+    JOIN pricing ON user_subscriptions.subscription = pricing.id 
+    WHERE user_subscriptions.userid = ?
+");
+$subStmt->bind_param("i", $userId);
+$subStmt->execute();
+$subResult = $subStmt->get_result();
+
+if ($subRow = $subResult->fetch_assoc()) {
+    $hasActiveSub = true;
+    $maxStores = $subRow['max_stores'];
+}
+$subStmt->close();
 
 ?>
 <!DOCTYPE html>
@@ -16,15 +35,63 @@ if (!isset($_COOKIE['id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Boltjaim</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://kit.fontawesome.com/086e7cefb3.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="css/boti.css">
+    <link rel="stylesheet" href="css/nav.css">
 </head>
 <body>
-    <?php 
-    $stmt = "SELECT * FROM stores WHERE userid = $_COOKIE[id]";
-    $result = $conn->query($stmt);
-    while ($store = $result->fetch_assoc()) { ?>
-        <p><?= $store['name']; ?></p>
-        <p><?= $store['type']; ?></p>
-        <p><?= $store['contact_name']; ?></p>
-    <?php } ?>
+    <?php require "required/nav.php"; ?>
+
+    <div class="stores-container">
+        <?php if ($hasActiveSub) { 
+            $stmt = $conn->prepare("SELECT * FROM stores WHERE userid = ?");
+            $stmt->bind_param("i", $userId);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $store_count = $result->num_rows;
+
+            while ($store = $result->fetch_assoc()) { ?>
+                <form class="store-card" method="post" action="storyhandler.php?id=<?= $store['id']; ?>">
+                    <p class="store-name"><?= htmlspecialchars($store['name']) ?></p>
+                    <p class="store-type"><?= htmlspecialchars($store['type']) ?></p>
+                    <p class="store-address"><?= htmlspecialchars($store['address']) ?></p>
+                    <input type="submit" name="store-handler-btn" value="Kezelés">
+                </form>
+            <?php 
+            }
+            $stmt->close();
+
+            if (is_null($maxStores) || $maxStores > $store_count) {
+                $canAddStore = true;
+            }
+            ?>
+
+            <?php if ($canAddStore): ?>
+                <div class="store-card add" id="add-card" onclick="Add(1)">
+                    <span><i class="fa-solid fa-plus"></i></span>
+                </div>
+            <?php else: ?>
+                <div class="store-card add-disabled" id="add-card">
+                    <span><i class="fa-solid fa-plus"></i></span>
+                </div>
+            <?php endif; ?>
+
+        <?php } else { ?>
+            <div class="store-card add" id="add-card" onclick="Add(0)">
+                <span><i class="fa-solid fa-plus"></i></span>
+            </div>
+        <?php } ?>
+    </div>
+
 </body>
 </html>
+<script>
+    function Add(sub) {
+        if (sub == 1) {
+            window.location.href = "addstore.php";
+        } else {
+            window.location.href = "pricing.php";
+        }
+    }
+</script>

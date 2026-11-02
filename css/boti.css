@@ -1,8 +1,144 @@
-form { 
-    display: flex; 
-    flex-direction: column; 
-    gap: 12px; 
-    max-width: 400px; 
+:root {
+    --white: #F8F9FB;
+    --black: #000000;
+    --gray: #8d8d8d;
+    --dark-gray: #4e4e4e;
+    --red: #ff4d4d;
+    --green: #66BB6A;
+    /* --default: #71be37; */
+    /* --default: #91c26f; */
+    --default: #81d640;
+    --blue: #b8b8b8;
+    --dark-green: #75c23a;
+
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial;
+}
+
+body {
+    background-color: #f0f2f5;
+}
+
+/* ADD STORE */
+.form-container {
+    max-width: 500px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: var(--white);
+    border-radius: 20px;
+    border-top: var(--dark-green) solid 4px;
+    box-shadow: #b3b3b3 0px 3px 15px;
+}
+
+.form-container h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: var(--black);
+}
+
+.form-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-width: 100%;
+}
+
+.form-container label {
+    font-size: 15px;
+    font-weight: bold;
+    color: var(--dark-gray);
+    margin-bottom: -5px;
+}
+
+.form-container input[type="text"],
+.form-container input[type="tel"],
+.search-select-toggle {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    font-size: 14px;
+    box-shadow: #b3b3b326 0px 0px 5px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.form-container input[type="text"]:focus,
+.form-container input[type="tel"]:focus {
+    border-color: var(--dark-green);
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: normal !important;
+    color: var(--dark-gray);
+    cursor: pointer;
+    margin-bottom: 0 !important;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--dark-green);
+    cursor: pointer;
+}
+
+.form-container input[type="submit"] {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    background-color: var(--default);
+    color: var(--white);
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.form-container input[type="submit"]:hover {
+    background-color: var(--dark-green);
+}
+
+.search-select {
+    width: 100% !important;
+}
+
+.search-select-toggle {
+    border-radius: 10px !important;
+    border: 1px solid #ccc !important;
+    padding: 10px 12px !important;
+    cursor: pointer;
+}
+
+.search-select-panel {
+    border-radius: 10px;
+    margin-top: 5px;
+    box-shadow: #b3b3b3 0px 3px 10px;
+    overflow: hidden;
+    border: 1px solid #ccc !important;
+}
+
+.search-select-panel input {
+    border-radius: 0 !important;
+    border-bottom: 1px solid #ccc !important;
+    padding: 10px !important;
+}
+
+#other-type {
+    margin-top: 5px;
+    width: 100%;
 }
 
 .store-type-row { 
@@ -70,4 +206,182 @@ form {
 
 #other-type { 
     display: none; 
+}
+
+/* MY STORES */
+.stores-container {
+    width: 100%;
+    padding: 20px;
+}
+
+.store-card {
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+    width: 220px;
+    height: 200px;
+    margin: 10px;
+    padding: 15px;
+    background-color: var(--white);
+    border-radius: 20px;
+    border-top: var(--dark-green) solid 3px;
+    box-shadow: #b3b3b3 0px 3px 15px;
+}
+
+.store-card input[type=submit] {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    display: block;
+    width: 100px;
+    padding: 10px;
+    background-color: var(--default);
+    color: var(--white);
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: bold;
+    transition: all .2s;
+}
+
+.store-card input[type=submit]:hover {
+    background-color: var(--dark-green);
+    cursor: pointer;
+    transition: all .2s;
+}
+
+.store-name {
+    font-size: 20px;
+    font-weight: bold;
+    display: block;
+    margin-bottom: 14px;
+}
+
+.store-type {
+    font-size: 16px;
+    color: var(--gray);
+    margin-bottom: 5px;
+}
+
+.store-address {
+    font-size: 14px;
+    color: var(--dark-gray);
+}
+
+.add {
+    text-align: center;
+    cursor: pointer;
+    background-color: var(--default);
+    border-top: none;
+}
+
+.add-disabled {
+    text-align: center;
+    cursor: not-allowed;
+    background-color: var(--default);
+    border-top: none;
+}
+
+.add i {
+    color: var(--white);
+    font-size: 50px;
+    line-height: 170px;
+    font-weight: bold;
+}
+
+/* SUBSCRIPTIONS */
+.pricing-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    max-width: 1000px;
+    margin: 0 auto;
+    margin-top: 20px;
+}
+
+.pricing-card {
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+    width: 280px;
+    height: 500px;
+    padding: 25px;
+    background-color: var(--white);
+    border-radius: 20px;
+    border-top: var(--gray) solid 4px;
+    box-shadow: #b3b3b3 0px 3px 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.pricing-card.featured {
+    border-top: var(--dark-green) solid 4px;
+}
+
+.plan-name {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: var(--black);
+}
+
+.plan-price {
+    font-size: 28px;
+    font-weight: bold;
+    color: var(--gray);
+    margin-bottom: 15px;
+}
+
+.pricing-card.featured .plan-price {
+    color: var(--dark-green);
+}
+
+.plan-features {
+    list-style: none;
+    margin-bottom: 20px;
+    flex-grow: 1;
+}
+
+.plan-features li {
+    font-size: 14px;
+    color: var(--dark-gray);
+    margin-bottom: 8px;
+}
+
+.pricing-card input[type=submit],
+.pricing-card .btn-link {
+    position: absolute;
+    bottom: 25px;
+    left: 25px;
+    right: 25px;
+    display: block;
+    width: calc(100% - 50px);
+    padding: 12px;
+    background-color: var(--gray);
+    color: var(--white);
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all .2s;
+}
+
+.pricing-card.featured input[type=submit],
+.pricing-card.featured .btn-link {
+    background-color: var(--dark-green);
+}
+
+.pricing-card input[type=submit]:hover,
+.pricing-card .btn-link:hover {
+    background-color: var(--dark-gray);
+    transition: all .2s;
+}
+
+.pricing-card.featured input[type=submit]:hover,
+.pricing-card.featured .btn-link:hover {
+    background-color: var(--default);
 }

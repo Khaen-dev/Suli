@@ -2,20 +2,63 @@
 
 require "required/config.php"; 
 
+if (!isset($_COOKIE['id'])) {
+    header("Location: login.php");
+    die();
+}
+
+$userId = $_COOKIE['id'];
+
 if (isset($_POST['add-store-btn'])) {
-    $store_type =$_POST['store_type'] ?? '';
+    $subStmt = $conn->prepare("
+        SELECT pricing.store_count 
+        FROM user_subscriptions AS subs
+        JOIN pricing ON subs.subscription = pricing.id 
+        WHERE subs.userid = ?
+    ");
+    $subStmt->bind_param("i", $userId);
+    $subStmt->execute();
+    $subResult = $subStmt->get_result();
+
+    $maxStores = null;
+    if ($subRow = $subResult->fetch_assoc()) {
+        $maxStores = $subRow['store_count'];
+    }
+    $subStmt->close();
+
+    $countStmt = $conn->prepare("SELECT COUNT(*) AS total FROM stores WHERE userid = ?");
+    $countStmt->bind_param("i", $userId);
+    $countStmt->execute();
+    $countResult = $countStmt->get_result();
+    $currentCount = $countResult->fetch_assoc()['total'];
+    $countStmt->close();
+
+    if ($maxStores !== null && $currentCount >= $maxStores) {
+        header("Location: pricing.php?limit=exceeded");
+        exit();
+    }
+
+    $store_type = $_POST['store_type'] ?? '';
     if ($store_type === 'other' && !empty($_POST['other-type'])) {
         $store_type = trim($_POST['other-type']);
     }
 
-    $stmt =$conn->prepare("INSERT INTO stores (name, type, contact_name, contact_email, tel) VALUES (?, ?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO stores (userid, name, type, address, contact_name, contact_email, tel) VALUES (?, ?, ?, ?, ?, ?, ?)");
     $stmt->bind_param(
-        "sssss", 
+        "issssss", 
+        $userId,
         $_POST['store_name'], 
-        $store_type,$_POST['contact_name'], 
-        $_POST['contact_email'],$_POST['tel']
+        $store_type,
+        $_POST['store_address'],
+        $_POST['contact_name'], 
+        $_POST['contact_email'],
+        $_POST['tel']
     );
-    $stmt->execute();$stmt->close();
+    $stmt->execute();
+    $stmt->close();
+
+    header("Location: dashboard.php");
+    exit();
 }
 
 ?>
@@ -26,39 +69,52 @@ if (isset($_POST['add-store-btn'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bolt hozzáadása</title>
     <link rel="stylesheet" href="css/boti.css">
+    <link rel="stylesheet" href="css/nav.css">
 </head>
 <body>
-    <form method="post">
-        <label for="store_name">Bolt neve *</label>
-        <input type="text" name="store_name" id="store_name" required>
+    <?php require "required/nav.php"; ?>
+    
+    <div class="form-container">
+        <h2>Bolt hozzáadása</h2>
+        <form method="post">
+            <label for="store_name">Bolt neve *</label>
+            <input type="text" name="store_name" id="store_name" required>
 
-        <label for="store-type-search">Bolt típusa *</label>
-        <div class="store-type-row">
-            <div class="search-select" id="store-type-widget">
-                <input type="hidden" name="store_type" id="store_type" value="default">
-                <button type="button" class="search-select-toggle" id="store-type-toggle">Válassz típust</button>
-                <div class="search-select-panel" id="store-type-panel">
-                    <input type="text" id="store-type-search" placeholder="Keresés..." autocomplete="off">
-                    <div class="search-select-options" id="store-type-options"></div>
+            <label for="store-type-search">Bolt típusa *</label>
+            <div class="store-type-row">
+                <div class="search-select" id="store-type-widget">
+                    <input type="hidden" name="store_type" id="store_type" value="default">
+                    <button type="button" class="search-select-toggle" id="store-type-toggle">Válassz típust</button>
+                    <div class="search-select-panel" id="store-type-panel">
+                        <input type="text" id="store-type-search" placeholder="Keresés..." autocomplete="off">
+                        <div class="search-select-options" id="store-type-options"></div>
+                    </div>
                 </div>
+                <input type="text" name="other-type" id="other-type" placeholder="Pl.: Kávézó">
             </div>
-            <input type="text" name="other-type" id="other-type" placeholder="Pl.: Kávézó">
-        </div>
 
-        <label for="contact_name">Kapcsolattartó neve *</label>
-        <input type="text" name="contact_name" id="contact_name" required>
+            <label for="store_address">Bolt címe *</label>
+            <input type="text" name="store_address" id="store_address" required>
 
-        <label for="contact_email">Kapcsolattartó e-mail *</label>
-        <input type="text" name="contact_email" id="contact_email" required>
+            <label for="contact_name">Kapcsolattartó neve *</label>
+            <input type="text" name="contact_name" id="contact_name" required>
 
-        <label for="tel">Telefonszám *</label>
-        <input type="tel" name="tel" id="tel" required>
+            <label for="contact_email">Kapcsolattartó e-mail *</label>
+            <input type="text" name="contact_email" id="contact_email" required>
 
-        <label><input type="checkbox" id="aszf" name="aszf" value="igen" required> ÁSZF elfogadása *</label>
-        <label><input type="checkbox" id="ate" name="ate" value="igen" required> Adatkezelési tájékoztató elfogadása *</label>
+            <label for="tel">Telefonszám *</label>
+            <input type="tel" name="tel" id="tel" required>
 
-        <input type="submit" name="add-store-btn" value="Bolt hozzáadása">
-    </form>
+            <label class="checkbox-label">
+                <input type="checkbox" id="aszf" name="aszf" value="igen" required> ÁSZF elfogadása *
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" id="ate" name="ate" value="igen" required> Adatkezelési tájékoztató elfogadása *
+            </label>
+
+            <input type="submit" name="add-store-btn" value="Bolt hozzáadása">
+        </form>
+    </div>
 
     <script>
         const storeTypes = [
@@ -96,7 +152,7 @@ if (isset($_POST['add-store-btn'])) {
             $("store-type-search").value = "";
 
             const isOther = val === "other";
-            $("other-type").style.display = isOther ? "inline-block" : "none";
+            $("other-type").style.display = isOther ? "block" : "none";
             if (!isOther) $("other-type").value = "";
 
             renderOptions();
