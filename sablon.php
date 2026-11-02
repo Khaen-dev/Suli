@@ -34,7 +34,7 @@ require "required/config.php";
     if(isset($_POST['kedvenc'])) {
         $lekerdezes = "SELECT storeid,userid from favorites WHERE storeid = $eredmeny[id] AND userid = $_COOKIE[id]";
         $talalt = $conn->query($lekerdezes);
-        if(mysqli_num_rows($talalt) == 0) {
+        if(mysqli_num_rows($talalt) == 1) {
             echo "<p>A bolt már szerepel a kedvencek között!</p>";
         } else {
             $storeId = $eredmeny['id'];
