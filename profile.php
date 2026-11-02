@@ -1,5 +1,6 @@
 <?php
-
+require "required/config.php";
+require "required/functions.php";
 ?>
 <!DOCTYPE html>
 <html lang="hu">
