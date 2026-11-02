@@ -3,7 +3,7 @@
     --light-lime: #BADE8C;
     --white: #fff;
     --shadow: #949494;
-    --gray: #ebebeb;
+    --grey: #ebebeb;
 }
 
 * {
@@ -14,29 +14,6 @@
 
 body {
     font-family: Arial;
-}
-
-/* NAV */
-.nav{
-    text-decoration: none;
-    color: #333;
-    padding: 10px 15px;
-    display: inline-block;
-}
-.nav ul{
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-.nav ul li{
-    display: inline-block;
-}
-.nav ul li a{
-    text-decoration: none;
-    color: #333;
-    padding: 10px 15px;
-    display: inline-block;
-    list-style-type: none;
 }
 
 /* LOGIN */
@@ -71,7 +48,7 @@ body {
     margin-bottom: 5px;
     border: none;
     width: 100%;
-    background-color: var(--gray);
+    background-color: var(--grey);
     padding: 5px;
     border-radius: 5px;
 }
