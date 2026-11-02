@@ -25,29 +25,32 @@ require "required/config.php";
     $eredmeny = $talalt->fetch_assoc();
     echo "<h1>" . $eredmeny['name'] . "</h1>";
     echo "<p>" . $eredmeny['address'] . "</p>";
-    if($eredmeny['contact_name'] !== null) {
+    if($eredmeny['contact_name'] != null) {
         echo "<p>Kapcsolattartó: " . $eredmeny['contact_name'] . "</p>";
     }
-    if($eredmeny['contact_email'] !== null) {
+    if($eredmeny['contact_email'] != null) {
         echo "<p>Email: " . $eredmeny['contact_email'] . "</p>";
     }
     if(isset($_POST['kedvenc'])) {
-        $lekerdezes = "SELECT storeid,userid from favorites WHERE storeid = '$eredmeny[id]' AND userid = '$_COOKIE[id]'";
+        $lekerdezes = "SELECT storeid,userid from favorites WHERE storeid = $eredmeny[id] AND userid = $_COOKIE[id]";
         $talalt = $conn->query($lekerdezes);
-        if($talalt->num_rows > 0) {
+        if(mysqli_num_rows($talalt) == 0) {
             echo "<p>A bolt már szerepel a kedvencek között!</p>";
         } else {
             $storeId = $eredmeny['id'];
             $userId = $_COOKIE['id'];
             $conn->query("INSERT INTO favorites (id,storeid, userid) VALUES (id,'$storeId', '$userId')");
             echo "<p>A bolt hozzáadva a kedvencekhez!</p>";
-            ?>
-            <form method ="post">
-            <input type="submit" name="kedvenc" value="Kedvencekhez adás">
-            </form> 
-            <?php } 
+            } 
         }
     
-        ?>
+        ?><form method ="post">
+            <input type="submit" id = "kedvenc" name="kedvenc" value="Kedvencekhez adás">
+            </form> 
 </body>
 </html>
+<script>
+    document.getElementById("kedvenc").addEventListener("click", function() {
+        this.style.display = "none";
+    });
+</script>
