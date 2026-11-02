@@ -30,15 +30,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/nav.css">
+    <link rel="stylesheet" href="css/styles.css">
     <title>Regisztráció</title>
 </head>
 <body>
     <header> <?php require "required/nav.php"; ?></header>
-    <form method="post">
-        <label>Regisztráció</label>
+    <form method="post" class="login-form">
+        <label class="header">Regisztráció</label>
+        <label class="title">Email</label>
         <input type="email" name="email" placeholder="email@email.com">
+        <label class="title">Név</label>
         <input type="text" name="last_name" placeholder="Vezetéknév">
         <input type="text" name="first_name" placeholder="Keresztnév">
+        <label class="title">Jelszó</label>
         <input type="password" name="pass1" placeholder="Jelszó">
         <input type="password" name="pass2" placeholder="Jelszó megerősítése">
         <input type="submit" name="reg-btn" value="Regisztráció">

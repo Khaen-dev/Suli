@@ -16,7 +16,10 @@ require "required/functions.php";
     <!-- név módosítás (label-el megjelenites, ranyom a modositas gombra es JS a helyere egy atirhato form-ot rak)
          jelszó módosítás
          email módosítás
-
-         -->
+    -->
+    <?php
+        
+    ?>
+    <span></span>
 </body>
 </html>
