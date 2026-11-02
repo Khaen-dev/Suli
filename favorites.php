@@ -2,7 +2,10 @@
 
 require "required/config.php";
 require "required/functions.php";
-
+if(!isset($_COOKIE['id'])) {
+    header("Location: login.php");
+    
+}
 
 ?>
 <!DOCTYPE html>
@@ -19,10 +22,10 @@ require "required/functions.php";
         <?php require "required/nav.php"; ?>
     </header>
     <?php
-        $lekerdezes = "SELECT name from stores WHERE favorite = 1";
+        $lekerdezes = "SELECT storeid,userid from stores WHERE userid = '$_COOKIE[id]'";
         $talalt = $conn->query($lekerdezes);
         while($eredmeny = $talalt->fetch_assoc()) {
-            echo $eredmeny['name'] . "<br>";
+            echo "Store ID: " . $eredmeny['storeid'] . ", User ID: " . $eredmeny['userid'] . "<br>";
         }
     ?>
 </body>

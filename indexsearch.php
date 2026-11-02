@@ -16,10 +16,10 @@ require "required/config.php";
 <body>  
     <?php
     
-    $stmt = "SELECT img, name, place FROM boltok WHERE name LIKE '%$_GET[keresett]%' OR place LIKE '%$_GET[keresett]%'";
+    $stmt = "SELECT  name, address FROM stores WHERE name LIKE '%$_GET[keresett]%' OR address LIKE '%$_GET[keresett]%'";
     $found = $conn->query($stmt);
     while($f = $found->fetch_assoc()){
-        echo "<a class='talalat' href='sablon.php?name=$f[name]'>" . $f['place'] . "</a>";
+        echo "<a class='talalat' href='sablon.php?name=$f[name]'>".$f['name'] . " - " . $f['address'] . "</a>";
 
     }
     ?>
