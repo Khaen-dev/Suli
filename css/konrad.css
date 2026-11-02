@@ -8,7 +8,7 @@ body {
     font-family: Arial;
 }
 .search input[type="text"] {
-    margin: 0 auto;
+    margin: 20px auto;
     display: flex;
     background-color: #f1f1f1;
     width: 1000px;
@@ -25,11 +25,12 @@ body {
     gap: 8px;
     width: 1000px;
     margin: 8px auto 0;
+    
 }
 
 .talalat {
     display: block;
-    margin: 0 auto;
+    margin: 5px auto;
     padding: 10px 14px;
     border: 1px solid #ccc;
     border-radius: 12px;
