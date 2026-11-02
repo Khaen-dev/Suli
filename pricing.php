@@ -9,6 +9,14 @@ if (!isset($_COOKIE['id'])) {
 
 $userId = $_COOKIE['id'];
 
+if (isset($_GET['limit']) && $_GET['limit'] === 'exceeded') {
+    $error = "Elérted a maximális boltszámot a jelenlegi előfizetéseddel. Kérlek válassz egy magasabb csomagot.";
+}
+
+if (isset($_GET['expired']) && $_GET['expired'] === 'true') {
+    $error = "Lejárt az előfizetésed! Kérlek válassz egy új csomagot.";
+}
+
 if (isset($_POST['select_plan_btn'])) {
     $planId = $_POST['plan_id'];
 
@@ -111,6 +119,7 @@ if (isset($_POST['select_plan_btn'])) {
                 <input type="submit" name="select_plan_btn" value="Kiválasztás" class="btn-link" style="border: none; cursor: pointer;">
             </form>
         <?php } ?>
+        <p class="error" style="color: red; text-align: center; margin-top: 20px;"><?= $error ?? ''; ?></p>
     </div>
 
 </body>

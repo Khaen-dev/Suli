@@ -11,7 +11,7 @@ $userId = $_COOKIE['id'];
 
 if (isset($_POST['add-store-btn'])) {
     $subStmt = $conn->prepare("
-        SELECT pricing.store_count 
+        SELECT subs.*, pricing.store_count 
         FROM user_subscriptions AS subs
         JOIN pricing ON subs.subscription = pricing.id 
         WHERE subs.userid = ?
@@ -23,6 +23,9 @@ if (isset($_POST['add-store-btn'])) {
     $maxStores = null;
     if ($subRow = $subResult->fetch_assoc()) {
         $maxStores = $subRow['store_count'];
+        if (strtotime($subRow['expires']) < time()) {
+            $expired = true;
+        }
     }
     $subStmt->close();
 
@@ -35,6 +38,11 @@ if (isset($_POST['add-store-btn'])) {
 
     if ($maxStores !== null && $currentCount >= $maxStores) {
         header("Location: pricing.php?limit=exceeded");
+        exit();
+    }
+    
+    if ($expired) {
+        header("Location: pricing.php?expired=true");
         exit();
     }
 

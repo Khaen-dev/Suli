@@ -11,12 +11,13 @@ $userId = $_COOKIE['id'];
 $store_count = 0;
 $hasActiveSub = false;
 $canAddStore = false;
+$expired = false;
 
 $subStmt = $conn->prepare("
-    SELECT user_subscriptions.*, pricing.store_count AS max_stores 
-    FROM user_subscriptions 
-    JOIN pricing ON user_subscriptions.subscription = pricing.id 
-    WHERE user_subscriptions.userid = ?
+    SELECT subs.*, pricing.store_count AS max_stores 
+    FROM user_subscriptions as subs
+    JOIN pricing ON subs.subscription = pricing.id 
+    WHERE subs.userid = ?
 ");
 $subStmt->bind_param("i", $userId);
 $subStmt->execute();
@@ -25,6 +26,9 @@ $subResult = $subStmt->get_result();
 if ($subRow = $subResult->fetch_assoc()) {
     $hasActiveSub = true;
     $maxStores = $subRow['max_stores'];
+    if (strtotime($subRow['expires']) < time()) {
+        $expired = true;
+    }
 }
 $subStmt->close();
 
@@ -44,7 +48,7 @@ $subStmt->close();
     <?php require "required/nav.php"; ?>
 
     <div class="stores-container">
-        <?php if ($hasActiveSub) { 
+        <?php if ($hasActiveSub) {
             $stmt = $conn->prepare("SELECT * FROM stores WHERE userid = ?");
             $stmt->bind_param("i", $userId);
             $stmt->execute();
@@ -52,7 +56,7 @@ $subStmt->close();
             $store_count = $result->num_rows;
 
             while ($store = $result->fetch_assoc()) { ?>
-                <form class="store-card" method="post" action="storyhandler.php?id=<?= $store['id']; ?>">
+                <form class="store-card" method="post" action="dashboard.php?id=<?= $store['id']; ?>">
                     <p class="store-name"><?= htmlspecialchars($store['name']) ?></p>
                     <p class="store-type"><?= htmlspecialchars($store['type']) ?></p>
                     <p class="store-address"><?= htmlspecialchars($store['address']) ?></p>
@@ -62,20 +66,24 @@ $subStmt->close();
             }
             $stmt->close();
 
-            if (is_null($maxStores) || $maxStores > $store_count) {
+            if (!$expired && (is_null($maxStores) || $maxStores > $store_count)) {
                 $canAddStore = true;
             }
             ?>
 
-            <?php if ($canAddStore): ?>
+            <?php if ($expired) { ?>
+                <div class="store-card add" id="add-card" onclick="Add(2)" title="Lejárt az előfizetésed!">
+                    <span><i class="fa-solid fa-plus"></i></span>
+                </div>
+            <?php } elseif ($canAddStore) { ?>
                 <div class="store-card add" id="add-card" onclick="Add(1)">
                     <span><i class="fa-solid fa-plus"></i></span>
                 </div>
-            <?php else: ?>
+            <?php } else { ?>
                 <div class="store-card add-disabled" id="add-card">
                     <span><i class="fa-solid fa-plus"></i></span>
                 </div>
-            <?php endif; ?>
+            <?php } ?>
 
         <?php } else { ?>
             <div class="store-card add" id="add-card" onclick="Add(0)">
@@ -90,7 +98,10 @@ $subStmt->close();
     function Add(sub) {
         if (sub == 1) {
             window.location.href = "addstore.php";
-        } else {
+        } else if (sub == 2) {
+            window.location.href = "pricing.php?expired=true";
+        }
+        else if (sub == 0) {
             window.location.href = "pricing.php";
         }
     }
