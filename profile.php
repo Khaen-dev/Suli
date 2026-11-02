@@ -13,10 +13,10 @@ require "required/functions.php";
 </head>
 <body>
     <header> <?php require "required/nav.php"; ?></header>
-    <!-- név módosítás
+    <!-- név módosítás (label-el megjelenites, ranyom a modositas gombra es JS a helyere egy atirhato form-ot rak)
          jelszó módosítás
          email módosítás
-         
+
          -->
 </body>
 </html>

@@ -16,6 +16,9 @@
     box-sizing: border-box;
 }
 
+body{
+    font-family: Arial;
+}
 /* NAV */
 nav.nav{
     text-decoration: none;
