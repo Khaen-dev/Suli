@@ -9,7 +9,7 @@ require "required/config.php";
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="http://code.jquery.com/jquery-latest.js"></script>
     <link rel ="stylesheet" href = "css/konrad.css">
-    <link rel="stylesheet" href="css/domstyle.css">
+    <link rel="stylesheet" href="css/nav.css">
     <title>Főoldal</title>
 </head>
 <body>
