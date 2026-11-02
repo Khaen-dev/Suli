@@ -4,12 +4,13 @@
         <li><a href="index.php" class="menu-left">Főoldal</a></li>
         <li><a href="addstore.php" class="menu-left">Bolt hozzáadása</a></li>
         <?php
+            if(isset($_COOKIE["id"])){
             $inquiry = "SELECT userid FROM user_subscriptions WHERE userid = $_COOKIE[id]";
             $found = $conn->query($inquiry);
             if(mysqli_num_rows($found) == 1){
         ?>
             <li><a href="mystores.php" class="menu-left">Saját boltok</a></li>
-        <?php } ?>
+        <?php }} ?>
         <div class="dropdown menu-right">
             <button class="dropbtn"><i class="fa-solid fa-bars"></i></button>
             <div class="dropdown-content">
