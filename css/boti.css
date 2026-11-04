@@ -386,3 +386,129 @@ body {
 .pricing-card.featured .btn-link:hover {
     background-color: var(--default);
 }
+
+/* DASHBOARD */
+.dashboard-wrapper {
+    display: flex;
+    max-width: 1800px;
+    margin: 30px auto;
+    gap: 20px;
+    padding: 0 20px;
+}
+
+.dashboard-sidebar {
+    width: 280px;
+    background-color: var(--white);
+    border-radius: 20px;
+    border-top: var(--dark-green) solid 4px;
+    box-shadow: #b3b3b3 0px 3px 15px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    height: fit-content;
+}
+
+.store-info-box h2 {
+    font-size: 20px;
+    color: var(--black);
+    margin-bottom: 5px;
+}
+
+.store-info-box p {
+    font-size: 13px;
+    color: var(--gray);
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.sidebar-nav button {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px 15px;
+    background: transparent;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: bold;
+    color: var(--dark-gray);
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+}
+
+.sidebar-nav button:hover {
+    background-color: #e8e8e8;
+    color: var(--black);
+}
+
+.sidebar-nav button.active {
+    background-color: var(--default);
+    color: var(--white);
+}
+
+.back-btn {
+    display: block;
+    text-align: center;
+    padding: 10px;
+    background-color: var(--gray);
+    color: var(--white);
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 10px;
+    transition: background-color 0.2s;
+}
+
+.back-btn:hover {
+    background-color: var(--dark-gray);
+}
+
+.dashboard-content {
+    flex-grow: 1;
+}
+
+.content-section {
+    display: none;
+    background-color: var(--white);
+    padding: 30px;
+    border-radius: 20px;
+    border-top: var(--dark-green) solid 4px;
+    box-shadow: #b3b3b3 0px 3px 15px;
+}
+
+.content-section.active {
+    display: block;
+}
+
+.content-section h2 {
+    font-size: 22px;
+    color: var(--black);
+    margin-bottom: 15px;
+}
+
+.content-section p {
+    font-size: 14px;
+    color: var(--dark-gray);
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.alert-box {
+    background-color: #ff4d4d22;
+    border: 1px solid var(--red);
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    color: var(--red);
+    font-weight: bold;
+    text-align: center;
+}
