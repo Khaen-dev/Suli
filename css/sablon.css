@@ -1,0 +1,129 @@
+body {
+    background-color: var(--white);
+    color: #222;
+    min-height: 100vh;
+}
+
+main.store-page {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 110px 16px 40px;
+}
+
+.store-card {
+    background: #fff;
+    border-top: 5px solid var(--default);
+    border-radius: 14px;
+    padding: 28px 30px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.10);
+}
+
+.store-card h1 {
+    font-size: 28px;
+    margin-bottom: 6px;
+}
+
+.store-address {
+    color: var(--dark-gray);
+    font-size: 16px;
+    padding-bottom: 18px;
+    margin-bottom: 18px;
+    border-bottom: 1px solid #ececec;
+}
+
+.store-info {
+    list-style: none;
+    display: grid;
+    gap: 10px;
+}
+
+.store-info li {
+    display: flex;
+    gap: 10px;
+    font-size: 15px;
+}
+
+.store-info .label {
+    min-width: 120px;
+    color: var(--gray);
+    font-weight: bold;
+}
+
+.store-info a {
+    color: #2e7d32;
+    text-decoration: none;
+}
+
+.store-info a:hover {
+    text-decoration: underline;
+}
+
+.store-actions {
+    margin-top: 24px;
+}
+
+.btn-favorite {
+    border: none;
+    border-radius: 8px;
+    background-color: var(--default);
+    color: #1d3a0a;
+    font-weight: bold;
+    font-size: 15px;
+    padding: 11px 22px;
+    cursor: pointer;
+    transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.btn-favorite:hover {
+    background-color: var(--dark-green);
+    transform: translateY(-1px);
+}
+
+.btn-favorite:active {
+    transform: translateY(0);
+}
+
+.btn-remove {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
+.btn-remove:hover {
+    background-color: #ffcdd2;
+}
+
+.message {
+    border-radius: 8px;
+    padding: 11px 14px;
+    margin-top: 20px;
+    font-size: 15px;
+}
+
+.message.success {
+    background: #e8f5e9;
+    color: #2e7d32;
+    border-left: 4px solid var(--green);
+}
+
+.message.info {
+    background: #fff8e1;
+    color: #8a6d00;
+    border-left: 4px solid #f5c518;
+}
+
+.message.error {
+    background: #ffebee;
+    color: #c62828;
+    border-left: 4px solid var(--red);
+}
+
+@media (max-width: 480px) {
+    .store-card {
+        padding: 22px 18px;
+    }
+
+    .store-info li {
+        flex-direction: column;
+        gap: 2px;
+    }
+}

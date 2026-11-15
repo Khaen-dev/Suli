@@ -1,0 +1,33 @@
+body {
+    background-color: var(--white);
+    min-height: 100vh;
+}
+
+main {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 110px 16px 40px;
+}
+
+main h1 {
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+.store {
+    background: white;
+    border-left: 5px solid var(--default);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 14px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.10);
+}
+
+.store strong {
+    font-size: 18px;
+}
+
+.store p {
+    color: var(--dark-gray);
+    margin-top: 4px;
+}
