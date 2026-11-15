@@ -38,13 +38,15 @@
     <form method="post" class="login-form">
         <label class="header">Regisztráció</label>
         <label class="title">Email</label>
-        <input type="email" name="email" placeholder="email@email.com">
-        <label class="title">Név</label>
-        <input type="text" name="last_name" placeholder="Vezetéknév">
-        <input type="text" name="first_name" placeholder="Keresztnév">
+        <input type="email" name="email" placeholder="valami@vmi.com">
+        <label class="title">Vezetéknév</label>
+        <input type="text" name="last_name" placeholder="Fazekas">
+        <label class="title">Keresztnév</label>
+        <input type="text" name="first_name" placeholder="Jenő">
         <label class="title">Jelszó</label>
-        <input type="password" name="pass1" placeholder="Jelszó">
-        <input type="password" name="pass2" placeholder="Jelszó megerősítése">
+        <input type="password" name="pass1" placeholder="*****">
+        <label class="title">Jelszó megerősítése</label>
+        <input type="password" name="pass2" placeholder="*****">
         <input type="submit" name="reg-btn" value="Regisztráció">
         </form>
 </body>
