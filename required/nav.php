@@ -14,8 +14,8 @@
         <div class="dropdown menu-right">
             <button class="dropbtn"><i class="fa-solid fa-bars"></i></button>
             <div class="dropdown-content">
-                <a href="favorites.php">Kedvenc boltok</a>
                 <a href="profile.php">Profilom</a>
+                <a href="favorites.php">Kedvenc boltok</a>
                 <?php if(isset($_COOKIE["id"])){ ?>
                     <a href="logout.php">Kijelentkezés</a>
                 <?php } else { ?>
