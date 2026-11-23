@@ -1,50 +1,26 @@
-<?php 
+<?php
 
 require "required/config.php";
+require "required/favo.php";
 
-if (!isset($_COOKIE['id'])) {
-    header("Location: index.php");
-    die();
-}
+$userId = getLoggedInUserId();
 
-$userId = $_COOKIE['id'];
+if (isset($_POST['plan_id'])) {
+    $expires = date('Y-m-d H:i:s', strtotime('+30 days'));
+    $hasSubscription = queryOne($conn, "SELECT id FROM user_subscriptions WHERE userid = ?", [$userId]);
 
-if (isset($_GET['limit']) && $_GET['limit'] === 'exceeded') {
-    $error = "Elérted a maximális boltszámot a jelenlegi előfizetéseddel. Kérlek válassz egy magasabb csomagot.";
-}
-
-if (isset($_GET['expired']) && $_GET['expired'] === 'true') {
-    $error = "Lejárt az előfizetésed! Kérlek válassz egy új csomagot.";
-}
-
-if (isset($_POST['select_plan_btn'])) {
-    $planId = $_POST['plan_id'];
-
-    $checkStmt = $conn->prepare("SELECT id FROM user_subscriptions WHERE userid = ?");
-    $checkStmt->bind_param("i", $userId);
-    $checkStmt->execute();
-    $checkResult = $checkStmt->get_result();
-
-    $expiresAt = date('Y-m-d H:i:s', strtotime('+30 days'));
-
-    if ($checkResult->num_rows > 0) {
-        $updateStmt = $conn->prepare("UPDATE user_subscriptions SET subscription = ?, expires = ? WHERE userid = ?");
-        $updateStmt->bind_param("isi", $planId, $expiresAt, $userId);
-        $updateStmt->execute();
-        $updateStmt->close();
+    if ($hasSubscription === null) {
+        runQuery($conn, "INSERT INTO user_subscriptions (userid, subscription, expires) VALUES (?, ?, ?)", [$userId, $_POST['plan_id'], $expires]);
     } else {
-        $insertStmt = $conn->prepare("INSERT INTO user_subscriptions (userid, subscription, expires) VALUES (?, ?, ?)");
-        $insertStmt->bind_param("iis", $userId, $planId, $expiresAt);
-        $insertStmt->execute();
-        $insertStmt->close();
+        runQuery($conn, "UPDATE user_subscriptions SET subscription = ?, expires = ? WHERE userid = ?", [$_POST['plan_id'], $expires, $userId]);
     }
-    
-    $checkStmt->close();
 
     header("Location: mystores.php");
     exit();
 }
 
+$subscription = getSubscription($conn, $userId);
+$plans = queryAll($conn, "SELECT * FROM pricing ORDER BY tier");
 ?>
 <!DOCTYPE html>
 <html lang="hu">
@@ -57,70 +33,58 @@ if (isset($_POST['select_plan_btn'])) {
 </head>
 <body>
     <?php require "required/nav.php"; ?>
+
+    <?php if ($subscription['has_subscription']) { ?>
+        <p class="plan-line center">
+            Jelenlegi csomagod: <strong><?= $subscription['name'] ?></strong>, lejár: <?= $subscription['expires'] ?>
+        </p>
+    <?php } ?>
+
     <div class="pricing-container">
-        <?php 
-        $stmt = "SELECT * FROM pricing ORDER BY tier ASC";
-        $result = $conn->query($stmt);
-        
-        while ($plan = $result->fetch_assoc()) { 
-            $formattedPrice = number_format($plan['price'], 0, '', ' ');
-            
-            if (is_null($plan['store_count'])) {
-                $storeText = "✓ <strong>Korlátlan bolt</strong> hozzáadása";
-            } else if ($plan['store_count'] == 1) {
-                $storeText = "✓ Maximum <strong>1 bolt</strong> kezelése";
-            } else {
-                $storeText = "✓ Maximum <strong>{$plan['store_count']} bolt</strong> kezelése";
-            }
-
-            if (is_null($plan['milestone_limit'])) {
-                $milestoneText = "✓ Korlátlan mérföldkő beállítás";
-            } else {
-                $milestoneText = "✓ Legfeljebb <strong>{$plan['milestone_limit']} aktív mérföldkő</strong>";
-            }
-
-            $isFeatured = ($plan['tier'] == 2) ? ' featured' : '';
-        ?>
-            <form method="post" class="pricing-card<?= $isFeatured ?>">
+        <?php foreach ($plans as $plan) { ?>
+            <form method="post" class="pricing-card <?= $plan['tier'] == 2 ? 'featured' : '' ?>">
                 <input type="hidden" name="plan_id" value="<?= $plan['id'] ?>">
 
-                <p class="plan-name"><?= htmlspecialchars($plan['name']) ?></p>
-                <p class="plan-price"><?= $formattedPrice ?> Ft <span style="font-size: 14px; color: var(--gray);">/ hó</span></p>
+                <p class="plan-name"><?= $plan['name'] ?></p>
+                <p class="plan-price"><?= number_format($plan['price'], 0, '', ' ') ?> Ft <span class="plan-period">/ hó</span></p>
+
                 <ul class="plan-features">
-                    <li><?= $storeText ?></li>
-                    <li>✓ Egyedi QR kódos pontgyűjtés</li>
-                    
-                    <?php if ($plan['allow_shared_db'] == 1): ?>
-                        <li>✓ <strong>Közös adatbázis opció</strong> (üzletek közötti pontbeváltás)</li>
-                    <?php else: ?>
-                        <li>✓ Független adatbázis boltonként</li>
-                    <?php endif; ?>
+                    <?php if ($plan['store_count'] === null) { ?>
+                        <li>✓ <strong>Korlátlan bolt</strong></li>
+                    <?php } else { ?>
+                        <li>✓ Maximum <strong><?= $plan['store_count'] ?> bolt</strong></li>
+                    <?php } ?>
 
-                    <li><?= $milestoneText ?></li>
+                    <?php if ($plan['milestone_limit'] === null) { ?>
+                        <li>✓ Korlátlan mérföldkő</li>
+                    <?php } else { ?>
+                        <li>✓ Legfeljebb <strong><?= $plan['milestone_limit'] ?> mérföldkő</strong></li>
+                    <?php } ?>
 
-                    <?php if ($plan['allow_events'] == 1): ?>
-                        <li>✓ <strong>Események kezelése</strong> (pl. dupla pontok)</li>
-                    <?php endif; ?>
+                    <?php if ($plan['staff_limit'] === null) { ?>
+                        <li>✓ Korlátlan munkatárs</li>
+                    <?php } else { ?>
+                        <li>✓ Boltonként <strong><?= $plan['staff_limit'] ?> munkatárs</strong></li>
+                    <?php } ?>
 
-                    <li>✓ Egyedi üzenetek a vásárlóknak és pultosoknak</li>
+                    <?php if ($plan['allow_shared_db'] == 1) { ?>
+                        <li>✓ <strong>Boltok összekapcsolása</strong> (közös pontok)</li>
+                    <?php } ?>
 
-                    <?php if ($plan['tier'] >= 2): ?>
-                        <li>✓ Ponttörténet és statisztikák</li>
-                    <?php endif; ?>
+                    <?php if ($plan['allow_events'] == 1) { ?>
+                        <li>✓ <strong>Események</strong> (pl. dupla pontok)</li>
+                    <?php } ?>
 
-                    <?php if ($plan['allow_export'] == 1): ?>
-                        <li>✓ Részletes adatexportálás (CSV / Excel)</li>
-                    <?php endif; ?>
+                    <li>✓ Egyedi üzenetek</li>
 
-                    <?php if ($plan['allow_priority_support'] == 1): ?>
+                    <?php if ($plan['allow_priority_support'] == 1) { ?>
                         <li>✓ Kiemelt ügyféltámogatás</li>
-                    <?php endif; ?>
+                    <?php } ?>
                 </ul>
-                <input type="submit" name="select_plan_btn" value="Kiválasztás" class="btn-link" style="border: none; cursor: pointer;">
+
+                <input type="submit" value="Kiválasztás">
             </form>
         <?php } ?>
-        <p class="error" style="color: red; text-align: center; margin-top: 20px;"><?= $error ?? ''; ?></p>
     </div>
-
 </body>
 </html>

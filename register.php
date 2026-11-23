@@ -10,7 +10,7 @@
             if($_POST['pass1'] == $_POST['pass2']){
 
                 $hash = password_hash($_POST['pass1'], PASSWORD_DEFAULT);
-                $conn->query("INSERT INTO users VALUES(id, '$_POST[email]', '$_POST[last_name]', '$_POST[first_name]', '$hash')");
+                $conn->query("INSERT INTO users (email, last_name, first_name, password) VALUES ('$_POST[email]', '$_POST[last_name]', '$_POST[first_name]', '$hash')");
 
                 header("Location: login.php");
             }

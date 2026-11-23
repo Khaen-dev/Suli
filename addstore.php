@@ -1,74 +1,38 @@
-<?php 
+<?php
 
-require "required/config.php"; 
+require "required/config.php";
+require "required/favo.php";
 
-if (!isset($_COOKIE['id'])) {
-    header("Location: login.php");
-    die();
-}
+$userId = getLoggedInUserId();
+$subscription = getSubscription($conn, $userId);
 
-$userId = $_COOKIE['id'];
-
-if (isset($_POST['add-store-btn'])) {
-    $subStmt = $conn->prepare("
-        SELECT subs.*, pricing.store_count 
-        FROM user_subscriptions AS subs
-        JOIN pricing ON subs.subscription = pricing.id 
-        WHERE subs.userid = ?
-    ");
-    $subStmt->bind_param("i", $userId);
-    $subStmt->execute();
-    $subResult = $subStmt->get_result();
-
-    $maxStores = null;
-    if ($subRow = $subResult->fetch_assoc()) {
-        $maxStores = $subRow['store_count'];
-        if (strtotime($subRow['expires']) < time()) {
-            $expired = true;
-        }
-    }
-    $subStmt->close();
-
-    $countStmt = $conn->prepare("SELECT COUNT(*) AS total FROM stores WHERE userid = ?");
-    $countStmt->bind_param("i", $userId);
-    $countStmt->execute();
-    $countResult = $countStmt->get_result();
-    $currentCount = $countResult->fetch_assoc()['total'];
-    $countStmt->close();
-
-    if ($maxStores !== null && $currentCount >= $maxStores) {
-        header("Location: pricing.php?limit=exceeded");
-        exit();
-    }
-    
-    if ($expired) {
-        header("Location: pricing.php?expired=true");
-        exit();
-    }
-
-    $store_type = $_POST['store_type'] ?? '';
-    if ($store_type === 'other' && !empty($_POST['other-type'])) {
-        $store_type = trim($_POST['other-type']);
-    }
-
-    $stmt = $conn->prepare("INSERT INTO stores (userid, name, type, address, contact_name, contact_email, tel) VALUES (?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param(
-        "issssss", 
-        $userId,
-        $_POST['store_name'], 
-        $store_type,
-        $_POST['store_address'],
-        $_POST['contact_name'], 
-        $_POST['contact_email'],
-        $_POST['tel']
-    );
-    $stmt->execute();
-    $stmt->close();
-
-    header("Location: dashboard.php");
+if (!$subscription['is_active']) {
+    header("Location: pricing.php");
     exit();
 }
 
+$storeCount = queryOne($conn, "SELECT COUNT(*) AS count FROM stores WHERE owner_userid = ?", [$userId]);
+if ($subscription['store_count'] !== null && $storeCount['count'] >= $subscription['store_count']) {
+    header("Location: pricing.php");
+    exit();
+}
+
+if (isset($_POST['store_name'])) {
+    $storeType = $_POST['store_type'];
+    if ($storeType === 'Egyéb') {
+        $storeType = $_POST['other_type'];
+    }
+
+    $newStoreId = runQuery($conn, "
+        INSERT INTO stores (owner_userid, name, type, address, contact_name, contact_email, tel)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    ", [$userId, $_POST['store_name'], $storeType, $_POST['store_address'], $_POST['contact_name'], $_POST['contact_email'], $_POST['tel']]);
+
+    header("Location: dashboard.php?id=" . $newStoreId);
+    exit();
+}
+
+$storeTypes = ['Kávézó', 'Pékség', 'Cukrászda', 'Fodrászat', 'Szépségszalon', 'Étterem', 'Pizzázó', 'Bár', 'Egyéb'];
 ?>
 <!DOCTYPE html>
 <html lang="hu">
@@ -81,25 +45,23 @@ if (isset($_POST['add-store-btn'])) {
 </head>
 <body>
     <?php require "required/nav.php"; ?>
-    
+
     <div class="form-container">
         <h2>Bolt hozzáadása</h2>
+
         <form method="post">
             <label for="store_name">Bolt neve *</label>
             <input type="text" name="store_name" id="store_name" required>
 
-            <label for="store-type-search">Bolt típusa *</label>
-            <div class="store-type-row">
-                <div class="search-select" id="store-type-widget">
-                    <input type="hidden" name="store_type" id="store_type" value="default">
-                    <button type="button" class="search-select-toggle" id="store-type-toggle">Válassz típust</button>
-                    <div class="search-select-panel" id="store-type-panel">
-                        <input type="text" id="store-type-search" placeholder="Keresés..." autocomplete="off">
-                        <div class="search-select-options" id="store-type-options"></div>
-                    </div>
-                </div>
-                <input type="text" name="other-type" id="other-type" placeholder="Pl.: Kávézó">
-            </div>
+            <label for="store_type">Bolt típusa *</label>
+            <select name="store_type" id="store_type" required>
+                <?php foreach ($storeTypes as $storeType) { ?>
+                    <option value="<?= $storeType ?>"><?= $storeType ?></option>
+                <?php } ?>
+            </select>
+
+            <label for="other_type">Ha "Egyéb": a bolt típusa</label>
+            <input type="text" name="other_type" id="other_type" placeholder="Pl.: Virágbolt">
 
             <label for="store_address">Bolt címe *</label>
             <input type="text" name="store_address" id="store_address" required>
@@ -108,71 +70,16 @@ if (isset($_POST['add-store-btn'])) {
             <input type="text" name="contact_name" id="contact_name" required>
 
             <label for="contact_email">Kapcsolattartó e-mail *</label>
-            <input type="text" name="contact_email" id="contact_email" required>
+            <input type="email" name="contact_email" id="contact_email" required>
 
             <label for="tel">Telefonszám *</label>
             <input type="tel" name="tel" id="tel" required>
 
-            <label class="checkbox-label">
-                <input type="checkbox" id="aszf" name="aszf" value="igen" required> ÁSZF elfogadása *
-            </label>
-            <label class="checkbox-label">
-                <input type="checkbox" id="ate" name="ate" value="igen" required> Adatkezelési tájékoztató elfogadása *
-            </label>
+            <label class="checkbox-label"><input type="checkbox" required> ÁSZF elfogadása *</label>
+            <label class="checkbox-label"><input type="checkbox" required> Adatkezelési tájékoztató elfogadása *</label>
 
-            <input type="submit" name="add-store-btn" value="Bolt hozzáadása">
+            <input type="submit" value="Bolt hozzáadása">
         </form>
     </div>
-
-    <script>
-        const storeTypes = [
-            { value: "other", label: "Egyéb" },
-            { value: "Kávézó", label: "Kávézó" }
-        ];
-
-        const $ = id => document.getElementById(id);
-        const normalize = text => text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-
-        function renderOptions(query = "") {
-            const needle = normalize(query);
-            $("store-type-options").innerHTML = storeTypes
-                .filter(opt => !needle || normalize(opt.label).includes(needle))
-                .map(opt => `<button type="button" data-value="${opt.value}" aria-selected="${opt.value === $("store_type").value}">${opt.label}</button>`)
-                .join("");
-        }
-
-        $("store-type-toggle").onclick = () => {
-            if ($("store-type-panel").classList.toggle("open")) {
-                $("store-type-search").focus();
-            }
-        };
-
-        $("store-type-search").oninput = (e) => renderOptions(e.target.value);
-
-        $("store-type-options").onclick = (e) => {
-            const btn = e.target.closest("button");
-            if (!btn) return;
-
-            const val = btn.dataset.value;
-            $("store_type").value = val;
-            $("store-type-toggle").textContent = btn.textContent;
-            $("store-type-panel").classList.remove("open");
-            $("store-type-search").value = "";
-
-            const isOther = val === "other";
-            $("other-type").style.display = isOther ? "block" : "none";
-            if (!isOther) $("other-type").value = "";
-
-            renderOptions();
-        };
-
-        document.onclick = (e) => {
-            if (!$("store-type-widget").contains(e.target)) {
-                $("store-type-panel").classList.remove("open");
-            }
-        };
-
-        renderOptions();
-    </script>
 </body>
 </html>

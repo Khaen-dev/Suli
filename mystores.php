@@ -1,45 +1,32 @@
-<?php 
+<?php
 
 require "required/config.php";
+require "required/favo.php";
 
-if (!isset($_COOKIE['id'])) {
-    header("Location: login.php");
-    die();
-}
+$userId = getLoggedInUserId();
+$subscription = getSubscription($conn, $userId);
 
-$userId = $_COOKIE['id'];
-$store_count = 0;
-$hasActiveSub = false;
+$ownedStores = queryAll($conn, "SELECT * FROM stores WHERE owner_userid = ? ORDER BY name", [$userId]);
+
+$staffStores = queryAll($conn, "
+    SELECT stores.*, store_staff.role
+    FROM store_staff
+    JOIN stores ON stores.id = store_staff.store_id
+    WHERE store_staff.user_id = ?
+    ORDER BY stores.name
+", [$userId]);
+
 $canAddStore = false;
-$expired = false;
-
-$subStmt = $conn->prepare("
-    SELECT subs.*, pricing.store_count AS max_stores 
-    FROM user_subscriptions as subs
-    JOIN pricing ON subs.subscription = pricing.id 
-    WHERE subs.userid = ?
-");
-$subStmt->bind_param("i", $userId);
-$subStmt->execute();
-$subResult = $subStmt->get_result();
-
-if ($subRow = $subResult->fetch_assoc()) {
-    $hasActiveSub = true;
-    $maxStores = $subRow['max_stores'];
-    if (strtotime($subRow['expires']) < time()) {
-        $expired = true;
-    }
+if ($subscription['is_active']) {
+    $canAddStore = $subscription['store_count'] === null || count($ownedStores) < $subscription['store_count'];
 }
-$subStmt->close();
-
 ?>
 <!DOCTYPE html>
 <html lang="hu">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Boltjaim</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>Saját boltok</title>
     <script src="https://kit.fontawesome.com/086e7cefb3.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="css/boti.css">
     <link rel="stylesheet" href="css/nav.css">
@@ -48,61 +35,40 @@ $subStmt->close();
     <?php require "required/nav.php"; ?>
 
     <div class="stores-container">
-        <?php if ($hasActiveSub) {
-            $stmt = $conn->prepare("SELECT * FROM stores WHERE userid = ?");
-            $stmt->bind_param("i", $userId);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $store_count = $result->num_rows;
+        <?php if ($subscription['has_subscription']) { ?>
+            <p class="plan-line">
+                Csomag: <strong><?= $subscription['name'] ?></strong>,
+                lejár: <?= $subscription['expires'] ?>
+                · <a href="pricing.php">Csomag módosítása</a>
+            </p>
+        <?php } ?>
 
-            while ($store = $result->fetch_assoc()) { ?>
-                <form class="store-card" method="post" action="dashboard.php?id=<?= $store['id']; ?>">
-                    <p class="store-name"><?= htmlspecialchars($store['name']) ?></p>
-                    <p class="store-type"><?= htmlspecialchars($store['type']) ?></p>
-                    <p class="store-address"><?= htmlspecialchars($store['address']) ?></p>
-                    <input type="submit" name="store-handler-btn" value="Kezelés">
-                </form>
-            <?php 
-            }
-            $stmt->close();
+        <?php foreach ($ownedStores as $store) { ?>
+            <a class="store-card" href="dashboard.php?id=<?= $store['id'] ?>">
+                <p class="store-name"><?= $store['name'] ?></p>
+                <p class="store-type"><?= $store['type'] ?></p>
+                <p class="store-address"><?= $store['address'] ?></p>
+                <span class="store-button">Kezelés</span>
+            </a>
+        <?php } ?>
 
-            if (!$expired && (is_null($maxStores) || $maxStores > $store_count)) {
-                $canAddStore = true;
-            }
-            ?>
-
-            <?php if ($expired) { ?>
-                <div class="store-card add" id="add-card" onclick="Add(2)" title="Lejárt az előfizetésed!">
-                    <span><i class="fa-solid fa-plus"></i></span>
-                </div>
-            <?php } elseif ($canAddStore) { ?>
-                <div class="store-card add" id="add-card" onclick="Add(1)">
-                    <span><i class="fa-solid fa-plus"></i></span>
-                </div>
-            <?php } else { ?>
-                <div class="store-card add-disabled" id="add-card">
-                    <span><i class="fa-solid fa-plus"></i></span>
-                </div>
-            <?php } ?>
-
+        <?php if ($canAddStore) { ?>
+            <a class="store-card add" href="addstore.php"><i class="fa-solid fa-plus"></i></a>
         <?php } else { ?>
-            <div class="store-card add" id="add-card" onclick="Add(0)">
-                <span><i class="fa-solid fa-plus"></i></span>
-            </div>
+            <a class="store-card add" href="pricing.php"><i class="fa-solid fa-plus"></i></a>
+        <?php } ?>
+
+        <?php if (count($staffStores) > 0) { ?>
+            <h2 class="section-title">Boltok, ahol munkatárs vagy</h2>
+            <?php foreach ($staffStores as $store) { ?>
+                <a class="store-card" href="dashboard.php?id=<?= $store['id'] ?>">
+                    <p class="store-name"><?= $store['name'] ?></p>
+                    <p class="store-type"><?= $store['type'] ?></p>
+                    <p class="store-address"><?= ROLE_NAMES[$store['role']] ?></p>
+                    <span class="store-button">Kezelés</span>
+                </a>
+            <?php } ?>
         <?php } ?>
     </div>
-
 </body>
 </html>
-<script>
-    function Add(sub) {
-        if (sub == 1) {
-            window.location.href = "addstore.php";
-        } else if (sub == 2) {
-            window.location.href = "pricing.php?expired=true";
-        }
-        else if (sub == 0) {
-            window.location.href = "pricing.php";
-        }
-    }
-</script>
