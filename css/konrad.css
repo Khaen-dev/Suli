@@ -8,16 +8,29 @@
 body {
     background-color: #f0f2f5;
 }
+.search {
+    padding: 90px 16px 40px;
+}
+
 .search input[type="text"] {
     margin: 20px auto;
     display: flex;
-    background-color: #f1f1f1;
-    width: 1000px;
-    height: 50px;
+    background-color: white;
+    width: 100%;
+    max-width: 1000px;
+    height: 54px;
     font-size: 20px;
     border-radius: 15px;
     border: 1px solid #ccc;
-    padding: 10px;
+    padding: 10px 18px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.search input[type="text"]:focus {
+    border-color: #81d640;
+    box-shadow: 0 4px 14px rgba(129, 214, 64, 0.35);
 }
 
 .talalatok {
@@ -26,21 +39,26 @@ body {
     gap: 8px;
     width: 1000px;
     margin: 8px auto 0;
-    
+
 }
 
 .talalat {
     display: block;
-    margin: 5px auto;
-    padding: 10px 14px;
-    border: 1px solid #ccc;
+    margin: 8px auto;
+    padding: 14px 18px;
+    border: 1px solid #ddd;
+    border-left: 5px solid #81d640;
     border-radius: 12px;
-    background: #f0f0f0;
+    background: white;
     color: #222;
     text-decoration: none;
-    width: 1200px;
+    width: 100%;
+    max-width: 1000px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .talalat:hover {
-    background: #e0e0e0;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
 }
