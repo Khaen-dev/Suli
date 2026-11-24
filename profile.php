@@ -2,6 +2,7 @@
     require "required/config.php";
     require "required/functions.php";
 
+
     if(isset($_POST['save-changes'])){
         $inquiry = "SELECT * FROM users WHERE id=$_COOKIE[id]";
         $found = $conn->query($inquiry);
