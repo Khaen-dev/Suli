@@ -2,6 +2,9 @@
     require "required/config.php";
     require "required/functions.php";
 
+    if(!isset($_COOKIE['id'])){
+        header("Location: login.php");
+    }
 
     if(isset($_POST['save-changes'])){
         $inquiry = "SELECT * FROM users WHERE id=$_COOKIE[id]";
