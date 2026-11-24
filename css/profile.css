@@ -42,7 +42,14 @@ body {
     display: block;
     margin-bottom: 10px;
 }
-.profile-info input[type=submit]{
+.profile-info a{
+    cursor: pointer;
+    float: right;
+}
+.profile-info input[type=submit]:hover{
+    background-color: var(--dark-green);
+}
+.button{
     border: none;
     border-radius: 10px;
     margin-left: 20px;
@@ -51,11 +58,26 @@ body {
     cursor: pointer;
     float: right;
 }
-.profile-info input[type=text]{
+.profile-info input[type=text], .profile-info input[type=password]{
     display: none;
     border-radius: 5px;
     border: 1px solid var(--gray);
     padding: 5px;
+    float: right;
+    text-align: right;
+}
+.savechanges-btn{
+    width: 100%;
+    display: block;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    background-color: var(--default);
+    margin-top: 30px;
+    cursor: pointer;
+}
+.savechanges-btn:hover{
+    background-color: var(--dark-green);
 }
 .profile-info span{
     float: right;
